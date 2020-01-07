@@ -41,13 +41,18 @@ Route.get('/differences/:id', async ({params, response}) => {
   response.send(diff)
 })
 
-Route.post('/differences/:diff/:autor', async ({params, response}) =>  {
-  const autor = params.autor;
-  const diff = params.diff;
-  const DiffId = await Database
-    .insert({ diff: diff, autor: autor })
-    .into('differences')
-    .returning('id')
-  response.send(DiffId)
+Route.post('/differences', async ({request, response}) =>  {
+
+  if (request.hasBody()) {
+    const autor = request.all().autor;
+    const diff = request.all().diff;
+    const DiffId = await Database
+      .insert({ diff: diff, autor: autor })
+      .into('differences')
+      .returning('id')
+    response.send(DiffId)
+  } else {
+    response.send('Error : No body')
+  }
 })
 
